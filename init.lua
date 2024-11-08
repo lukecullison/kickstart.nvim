@@ -84,6 +84,9 @@ I hope you enjoy your Neovim journey,
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
+-- Luke's configs
+vim.api.nvim_set_keymap('i', 'jj', '<Esc>', { noremap = true, silent = true })
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -91,7 +94,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -102,7 +105,7 @@ vim.g.have_nerd_font = false
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -382,6 +385,22 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
+        defaults = {
+          mappings = {
+            i = { -- Insert mode mappings
+              ['<C-h>'] = 'move_selection_previous', -- Ctrl-h to move left (useful for horizontal lists)
+              ['<C-j>'] = 'move_selection_next', -- Ctrl-j to move down
+              ['<C-k>'] = 'move_selection_previous', -- Ctrl-k to move up
+              ['<C-l>'] = 'move_selection_next', -- Ctrl-l to move right (useful for horizontal lists)
+            },
+            n = { -- Normal mode mappings
+              ['<C-h>'] = 'move_selection_previous',
+              ['<C-j>'] = 'move_selection_next',
+              ['<C-k>'] = 'move_selection_previous',
+              ['<C-l>'] = 'move_selection_next',
+            },
+          },
+        },
         -- defaults = {
         --   mappings = {
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
@@ -605,17 +624,26 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
-        -- gopls = {},
-        -- pyright = {},
-        -- rust_analyzer = {},
+        svelte = {},
+        clangd = {},
+        gopls = {},
+        pyright = {},
+        rust_analyzer = { -- Rust LSP with additional settings
+          settings = {
+            ['rust-analyzer'] = {
+              cargo = { allFeatures = true },
+              procMacro = { enable = true },
+              checkOnSave = { command = 'clippy' }, -- Optional: Run clippy on save
+            },
+          },
+        },
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
+        ts_ls = {},
         --
 
         lua_ls = {
@@ -764,9 +792,11 @@ require('lazy').setup({
         -- No, but seriously. Please read `:help ins-completion`, it is really good!
         mapping = cmp.mapping.preset.insert {
           -- Select the [n]ext item
-          ['<C-n>'] = cmp.mapping.select_next_item(),
+          ['<C-j>'] = cmp.mapping.select_next_item(), -- Luke likes vim
+          --['<C-n>'] = cmp.mapping.select_next_item(),
           -- Select the [p]revious item
-          ['<C-p>'] = cmp.mapping.select_prev_item(),
+          ['<C-k>'] = cmp.mapping.select_prev_item(), -- Luke likes vim
+          --['<C-p>'] = cmp.mapping.select_prev_item(),
 
           -- Scroll the documentation window [b]ack / [f]orward
           ['<C-b>'] = cmp.mapping.scroll_docs(-4),
@@ -842,6 +872,23 @@ require('lazy').setup({
     end,
   },
 
+  { -- Luke added catppuccin
+    'catppuccin/nvim',
+    priority = 1000, -- Make sure to load this before all the other start plugins.
+    init = function()
+      -- vim.cmd.colorscheme 'catppuccin-mocha'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+
+  { -- Add vim-tmux-navigator for seamless navigation between tmux and Neovim
+    'christoomey/vim-tmux-navigator',
+    lazy = false,
+    config = function()
+      -- Any specific configuration (if necessary)
+    end,
+  },
+
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -888,7 +935,27 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      -- ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'cpp',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'rust',
+        'go',
+        'typescript', -- For TypeScript support in .svelte files
+        'javascript', -- For JavaScript support in .svelte files
+        'css', -- For CSS support in .svelte files
+        'svelte', -- Add Svelte if available in Treesitter
+      }, -- Luke added this
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
