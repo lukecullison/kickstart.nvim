@@ -881,6 +881,11 @@ require('lazy').setup({
     end,
   },
 
+  { -- Luke added undotree
+    'mbbill/undotree',
+    vim.api.nvim_set_keymap('n', '<leader>u', ':UndotreeToggle<CR>', { noremap = true, silent = true }),
+  },
+
   { -- Add vim-tmux-navigator for seamless navigation between tmux and Neovim
     'christoomey/vim-tmux-navigator',
     lazy = false,
