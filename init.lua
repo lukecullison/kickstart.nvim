@@ -625,6 +625,9 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         svelte = {},
+        tailwindcss = {},
+        html = {},
+        cssls = {},
         clangd = {},
         gopls = {},
         pyright = {},
@@ -736,6 +739,31 @@ require('lazy').setup({
     },
   },
 
+  { -- Luke added this for function autocomplete
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    config = function()
+      require('nvim-autopairs').setup {
+        -- Here you can configure more options if you like
+      }
+    end,
+  },
+
+  { -- Luke added this for html autocomplete
+    'windwp/nvim-ts-autotag',
+    event = 'InsertEnter',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+    },
+    config = function()
+      require('nvim-ts-autotag').setup()
+      -- Alternatively, you can enable it via TS configs:
+      -- require("nvim-treesitter.configs").setup({
+      --   autotag = { enable = true }
+      -- })
+    end,
+  },
+
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
@@ -777,6 +805,20 @@ require('lazy').setup({
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
+
+      local s = luasnip.snippet
+      local t = luasnip.text_node
+      local i = luasnip.insert_node
+
+      luasnip.add_snippets('rust', {
+        s('pln', {
+          t 'println!("',
+          i(1, 'variable'),
+          t ': {:?}", ',
+          i(2, 'variable'),
+          t ');',
+        }),
+      })
 
       cmp.setup {
         snippet = {
