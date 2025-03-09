@@ -810,13 +810,40 @@ require('lazy').setup({
       local t = luasnip.text_node
       local i = luasnip.insert_node
 
-      luasnip.add_snippets('rust', {
+      luasnip.add_snippets('rust', { -- Luke added this
         s('pln', {
           t 'println!("',
           i(1, 'variable'),
           t ': {:?}", ',
           i(2, 'variable'),
           t ');',
+        }),
+      })
+
+      luasnip.add_snippets('svelte', { -- Luke added this
+        s('styleme', {
+          t {
+            '  /* 1. Font Family */',
+            "  font-family: 'Georgia', serif;",
+            '  /* 2. Font Size */',
+            '  font-size: 1rem;',
+            '  /* 3. Font Weight */',
+            '  font-weight: 400;',
+            '  /* 4. Color */',
+            '  color: #555;',
+            '  /* 5. Margin */',
+            '  margin: 1rem 0;',
+            '  /* 6. Padding */',
+            '  padding: 0.5rem;',
+            '  /* 7. Line Height */',
+            '  line-height: 1.5;',
+            '  /* 8. Text Align */',
+            '  text-align: justify;',
+            '  /* 9. Text Decoration */',
+            "  text-decoration: none; /* Try 'underline' if desired */",
+            '  /* 10. Letter Spacing */',
+            '  letter-spacing: 0.05em;',
+          },
         }),
       })
 
@@ -1020,6 +1047,11 @@ require('lazy').setup({
     --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+  },
+
+  { -- Luke added this
+    'ThePrimeagen/vim-be-good',
+    cmd = 'VimBeGood',
   },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
